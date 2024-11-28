@@ -1,20 +1,28 @@
 import * as PIXI from 'pixi.js';
 import { SlotSprite } from 'src/app/slot/slot-sprite';
 import { Reel } from 'src/app/slot/reel';
+import { Strip } from 'src/app/slot/strip';
 
 const offset = 10;
 
-export class Viewport extends PIXI.Container {
+export class SlotMachine extends PIXI.Container {
+    // ########################################
+
+    private reels: Reel[];
+
     // ########################################
 
     constructor(
-        public readonly reels: Reel[],
+        private app: PIXI.Application,
+        col: number,
         row: number
     ) {
         super();
 
+        this.reels = this.createReel(col);
+
         const box = new PIXI.Graphics();
-        const width = SlotSprite.Size * reels.length + SlotSprite.Size * (reels.length - 1);
+        const width = SlotSprite.Size * col + SlotSprite.Size * col;
         const height = SlotSprite.Size * row;
 
         box.rect(0, 0, width, height);
@@ -23,11 +31,26 @@ export class Viewport extends PIXI.Container {
         this.mask = box;
         this.addChild(box);
 
-        reels.forEach((item, index) => {
+        this.reels.forEach((item, index) => {
             item.x = (item.width + offset) * index;
 
             this.addChild(item);
         });
+    }
+
+    // ########################################
+
+    private createReel(count: number): Reel[] {
+        const result = [];
+
+        for (let i = 0; i < count; i++) {
+            const item = new Strip();
+            const texture = this.app.renderer.generateTexture(item);
+
+            result.push(new Reel(texture, item.data));
+        }
+
+        return result;
     }
 
     // ########################################

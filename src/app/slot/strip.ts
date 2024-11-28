@@ -1,28 +1,29 @@
 import * as PIXI from 'pixi.js';
 import { REEL_FILE_LIST } from 'src/app/slot/asset-bundle';
 import { getRandomIndex } from 'src/app/random-int';
-import { ReelItem } from 'src/app/slot/reel-item';
+import { SlotSprite } from 'src/app/slot/slot-sprite';
 
-export class Reel extends PIXI.Container {
+export class Strip extends PIXI.Container {
+    // ########################################
+
+    public readonly data: string[] = [];
+
     // ########################################
 
     constructor() {
         super();
 
-        const container = new PIXI.Container();
-
         const images = REEL_FILE_LIST.map((item) => item.alias);
 
         while (images.length) {
             const alias = images.splice(getRandomIndex(images), 1)[0];
-            const item = new ReelItem(alias);
+            const item = new SlotSprite(alias);
 
-            container.addChild(item);
+            this.addChild(item);
+            this.data.push(alias);
 
-            item.position.y = (container.children!.length - 1) * item.height;
+            item.position.y = (this.children!.length - 1) * item.height;
         }
-
-        // const
     }
 
     // ########################################
