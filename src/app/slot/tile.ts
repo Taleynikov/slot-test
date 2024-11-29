@@ -1,16 +1,13 @@
 import * as PIXI from 'pixi.js';
+import { TILE_SIZE } from 'src/app/slot/params';
 
-export class SlotSprite extends PIXI.Sprite {
-    // ########################################
-
-    public static readonly Size = 65;
-
+export class Tile extends PIXI.Sprite {
     // ########################################
 
     constructor(alias: string) {
         super(PIXI.Texture.from(alias));
 
-        this.width = SlotSprite.Size;
+        this.width = TILE_SIZE;
 
         this.scale.y = this.scale.x;
     }

@@ -1,9 +1,7 @@
 import * as PIXI from 'pixi.js';
-import { SlotSprite } from 'src/app/slot/slot-sprite';
 import { Reel } from 'src/app/slot/reel';
 import { Strip } from 'src/app/slot/strip';
-
-const offset = 10;
+import { SLOT_COLS, SLOT_ROWS, SPIN_DURATION, TILE_SIZE } from 'src/app/slot/params';
 
 export class SlotMachine extends PIXI.Container {
     // ########################################
@@ -12,29 +10,47 @@ export class SlotMachine extends PIXI.Container {
 
     // ########################################
 
-    constructor(
-        private app: PIXI.Application,
-        col: number,
-        row: number
-    ) {
+    constructor(private app: PIXI.Application) {
         super();
 
-        this.reels = this.createReel(col);
-
         const box = new PIXI.Graphics();
-        const width = SlotSprite.Size * col + SlotSprite.Size * col;
-        const height = SlotSprite.Size * row;
+        const height = TILE_SIZE * SLOT_ROWS;
+        const offset = TILE_SIZE * 0.1;
 
-        box.rect(0, 0, width, height);
+        this.reels = this.createReel(SLOT_COLS);
+        this.reels.forEach((item, index) => {
+            item.x = (item.width + offset) * index;
+            item.y = height / 2;
+
+            this.addChild(item);
+        });
+
+        // ########################################
+
+        box.rect(0, 0, this.width, height);
         box.fill('#000');
 
         this.mask = box;
         this.addChild(box);
+    }
 
-        this.reels.forEach((item, index) => {
-            item.x = (item.width + offset) * index;
+    // ########################################
 
-            this.addChild(item);
+    public spin(): Promise<void> {
+        setTimeout(() => {
+            this.reels[0].stop();
+        }, SPIN_DURATION * 1000);
+
+        return new Promise((resolve, reject) => {
+            this.reels.forEach((item, index, array) => {
+                item.start().then(() => {
+                    this.reels[index + 1]?.stop();
+
+                    if (index === array.length - 1) {
+                        resolve();
+                    }
+                });
+            });
         });
     }
 

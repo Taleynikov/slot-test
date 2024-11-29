@@ -1,7 +1,7 @@
 import * as PIXI from 'pixi.js';
 import { REEL_FILE_LIST } from 'src/app/slot/asset-bundle';
 import { getRandomIndex } from 'src/app/random-int';
-import { SlotSprite } from 'src/app/slot/slot-sprite';
+import { Tile } from 'src/app/slot/tile';
 
 export class Strip extends PIXI.Container {
     // ########################################
@@ -17,7 +17,7 @@ export class Strip extends PIXI.Container {
 
         while (images.length) {
             const alias = images.splice(getRandomIndex(images), 1)[0];
-            const item = new SlotSprite(alias);
+            const item = new Tile(alias);
 
             this.addChild(item);
             this.data.push(alias);
