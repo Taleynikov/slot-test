@@ -32,7 +32,7 @@ export class SpinBtn extends PIXI.Container {
         background.eventMode = 'static';
         background.cursor = 'pointer';
 
-        background.on('click', () => callback());
+        background.on('pointertap', () => callback());
 
         this.addChild(background, text);
 
